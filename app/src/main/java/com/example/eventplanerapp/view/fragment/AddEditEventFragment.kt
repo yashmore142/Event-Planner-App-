@@ -70,7 +70,7 @@ class AddEditEventFragment : Fragment() {
 
         binding.tvDate.setOnClickListener {
             val cal = Calendar.getInstance().apply { timeInMillis = pickedDateTimeMillis }
-            DatePickerDialog(
+            val datePickerDialog = DatePickerDialog(
                 requireContext(),
                 { _, y, m, d ->
                     val c = Calendar.getInstance()
@@ -88,10 +88,14 @@ class AddEditEventFragment : Fragment() {
                     pickedDateTimeMillis = c.timeInMillis
                     updateDateTimeUI()
                 },
-                cal.get(Calendar.YEAR),
-                cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH)
-            ).show()
+                Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+            )
+            datePickerDialog.datePicker.minDate = System.currentTimeMillis()
+
+            datePickerDialog.show()
+
         }
 
         binding.tvTime.setOnClickListener {

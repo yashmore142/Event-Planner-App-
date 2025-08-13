@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.eventplanerapp.constant.Constant.startOfDayMillis
@@ -68,8 +69,13 @@ class CalendarFragment : Fragment() {
             }
         })
         binding.fabAdd.setOnClickListener {
-            val selectedStart = viewModel!!.selectedDayStart.value ?: startOfDayMillis(System.currentTimeMillis())
-            openAddEdit(null, selectedStart)
+            val todayStart = startOfDayMillis(System.currentTimeMillis())
+            val selectedStart = viewModel!!.selectedDayStart.value ?: todayStart
+            if (selectedStart >= todayStart) {
+                openAddEdit(null, selectedStart)
+            } else {
+                Toast.makeText(requireContext(), "You can't add events in the past", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
