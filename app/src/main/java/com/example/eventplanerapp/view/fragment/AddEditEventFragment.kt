@@ -122,7 +122,6 @@ class AddEditEventFragment : Fragment() {
                 viewModel?.update(event) { requireActivity().supportFragmentManager.popBackStack() }
             } else {
                 viewModel?.insert(event) {
-                    Log.i("AddEditEventFragment", "Event inserted")
                     requireActivity().supportFragmentManager.popBackStack()
                 }
             }

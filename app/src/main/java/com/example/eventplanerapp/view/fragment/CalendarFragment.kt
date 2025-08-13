@@ -1,18 +1,23 @@
 package com.example.eventplanerapp.view.fragment
 
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.eventplanerapp.R
+import com.example.eventplanerapp.constant.Constant.startOfDayMillis
+import com.example.eventplanerapp.constant.EventDecorator
 import com.example.eventplanerapp.databinding.FragmentCalendarBinding
 import com.example.eventplanerapp.view.activity.MainActivity
 import com.example.eventplanerapp.view.adapter.EventAdapter
 import com.example.eventplanerapp.viewmodel.EventViewModel
-import com.example.eventplanerapp.viewmodel.EventViewModel.Companion.startOfDayMillis
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -43,7 +48,32 @@ class CalendarFragment : Fragment() {
         val today = System.currentTimeMillis()
         binding.tvSelectedDate.text = dateFormat.format(Date(today))
         viewModel!!.selectDay(startOfDayMillis(today))
+        binding.calendarView.selectedDate = CalendarDay.today()
 
+        observer()
+        binding.calendarView.setOnDateChangedListener( object : OnDateSelectedListener {
+            override fun onDateSelected(
+                widget: MaterialCalendarView,
+                date: CalendarDay,
+                selected: Boolean
+            ) {
+                if (selected) {
+                    val cal = Calendar.getInstance()
+                    cal.set(date.year, date.month , date.day, 0, 0, 0)
+                    cal.set(Calendar.MILLISECOND, 0)
+                    val start = cal.timeInMillis
+                    binding.tvSelectedDate.text = dateFormat.format(Date(start))
+                    viewModel?.selectDay(start)
+                }
+            }
+        })
+        binding.fabAdd.setOnClickListener {
+            val selectedStart = viewModel!!.selectedDayStart.value ?: startOfDayMillis(System.currentTimeMillis())
+            openAddEdit(null, selectedStart)
+        }
+    }
+
+    private fun observer() {
         viewModel!!.eventsForSelectedDay.observe(viewLifecycleOwner) { list ->
             if (list.isEmpty()) {
                 binding.tvNoEvents.visibility = View.VISIBLE
@@ -52,19 +82,19 @@ class CalendarFragment : Fragment() {
                 binding.tvNoEvents.visibility = View.GONE
                 binding.rvEvents.visibility = View.VISIBLE
             }
+
             adapter.submitList(list)
         }
-        binding.calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
-            val cal = Calendar.getInstance()
-            cal.set(year, month, dayOfMonth, 0, 0, 0)
-            cal.set(Calendar.MILLISECOND, 0)
-            val start = cal.timeInMillis
-            binding.tvSelectedDate.text = dateFormat.format(Date(start))
-            viewModel!!.selectDay(start)
-        }
-        binding.fabAdd.setOnClickListener {
-            val selectedStart = viewModel!!.selectedDayStart.value ?: startOfDayMillis(System.currentTimeMillis())
-            openAddEdit(null, selectedStart)
+        viewModel!!.getAllEventDates.observe(viewLifecycleOwner) { list ->
+            val calendarDays = list.map { time ->
+                val cal = Calendar.getInstance().apply { timeInMillis  = time }
+                CalendarDay.from(
+                    cal.get(Calendar.YEAR),
+                    cal.get(Calendar.MONTH),
+                    cal.get(Calendar.DAY_OF_MONTH)
+                )
+            }
+            binding.calendarView.addDecorator(EventDecorator(Color.RED, calendarDays))
         }
     }
 
@@ -77,7 +107,6 @@ class CalendarFragment : Fragment() {
             .addToBackStack(null)
             .commit()
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

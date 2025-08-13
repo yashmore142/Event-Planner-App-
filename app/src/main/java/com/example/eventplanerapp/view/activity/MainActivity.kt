@@ -1,11 +1,8 @@
 package com.example.eventplanerapp.view.activity
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.example.eventplanerapp.R
 import com.example.eventplanerapp.databinding.ActivityMainBinding
@@ -33,12 +30,12 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.menu_calendar -> {
-                    replaceFragment(CalendarFragment())
+                    replaceFragment(CalendarFragment(),"CalendarFragment")
                     true
                 }
 
                 R.id.menu_upcoming -> {
-                    replaceFragment(UpcomingFragment())
+                    replaceFragment(UpcomingFragment(),"UpcomingFragment")
                     true
                 }
 
@@ -47,10 +44,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun replaceFragment(fragment: androidx.fragment.app.Fragment) {
+    private fun replaceFragment(fragment: androidx.fragment.app.Fragment, tag: String) {
+        val existingFragment = supportFragmentManager.findFragmentByTag(tag)
+        if (existingFragment != null && existingFragment.isVisible) return
         supportFragmentManager.beginTransaction()
-            .replace(binding.fragmentContainer.id, fragment)
-            .addToBackStack(null)
+            .replace(binding.fragmentContainer.id, fragment,tag)
             .commit()
     }
 }

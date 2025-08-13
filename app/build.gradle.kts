@@ -64,4 +64,7 @@ dependencies {
     // Coroutines
     implementation (libs.kotlinx.coroutines.core)
     implementation (libs.kotlinx.coroutines.android)
+
+    implementation ("com.prolificinteractive:material-calendarview:1.4.3")
+
 }

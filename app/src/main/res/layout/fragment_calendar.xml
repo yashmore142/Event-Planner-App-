@@ -1,46 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <CalendarView
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="?attr/colorSurface"
-        android:dateTextAppearance="?attr/textAppearanceBodyMedium"
-        android:weekDayTextAppearance="?attr/textAppearanceBodySmall"
-        android:layout_height="wrap_content"/>
+        android:dateTextAppearance="?attr/colorOnSurface"
+        android:weekDayTextAppearance="?attr/colorOnSurface"
+        app:mcv_dateTextAppearance="?attr/colorOnSurface"
+        app:mcv_tileHeight="50dp"
+        app:mcv_weekDayTextAppearance="?attr/colorOnSurface" />
 
     <TextView
         android:id="@+id/tvSelectedDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Selected Date"
-        android:padding="15dp"
+        android:paddingHorizontal="15dp"
+        android:text="@string/selected_date"
         android:textStyle="bold" />
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvEvents"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    <TextView
-        android:id="@+id/tvNoEvents"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:gravity="center"
-        android:textAppearance="?attr/textAppearanceHeadline6"
-        android:text="No Events"/>
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_gravity="end|bottom"
-        app:srcCompat="@android:drawable/ic_input_add"/>
+        android:layout_marginTop="10dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvEvents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/tvNoEvents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="No Events"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:visibility="gone" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            app:srcCompat="@android:drawable/ic_input_add" />
     </FrameLayout>
 </LinearLayout>

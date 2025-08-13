@@ -29,4 +29,8 @@ interface EventDao {
 
     @Query("SELECT * FROM events WHERE id = :id LIMIT 1")
     suspend fun getEventById(id: Long): Event?
+
+    @Query("SELECT dateTime FROM events")
+    fun getAllEventDatesLive(): LiveData<List<Long>>
+
 }
