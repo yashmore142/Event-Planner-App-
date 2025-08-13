@@ -30,7 +30,12 @@ interface EventDao {
     @Query("SELECT * FROM events WHERE id = :id LIMIT 1")
     suspend fun getEventById(id: Long): Event?
 
-    @Query("SELECT dateTime FROM events")
+    @Query("""
+    SELECT MIN(dateTime) as dateTime
+    FROM events
+    GROUP BY strftime('%Y-%m-%d', dateTime / 1000, 'unixepoch')
+    ORDER BY dateTime ASC
+""")
     fun getAllEventDatesLive(): LiveData<List<Long>>
 
 }
